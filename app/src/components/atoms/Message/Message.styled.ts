@@ -15,7 +15,7 @@ export const StyledContainer = styled.div(
 export const StyledMessage = styled.p(
   ({ $variant }: { $variant: MessageVariantType }) => [
     tw`px-5 py-2 rounded-2xl`,
-    $variant === 'sender' && tw`bg-blue-500 text-white rounded-br-none`,
+    $variant === 'sender' && tw`bg-blue-400 text-white rounded-br-none`,
     $variant === 'recipient' && tw`bg-neutral-200 text-black rounded-bl-none`,
   ],
 )

@@ -7,4 +7,4 @@ export const StyledInput = tw.input`absolute inset-0 w-full h-full opacity-0 cur
 
 export const StyledIcon = tw(
   HiOutlineCheck,
-)`rounded-sm stroke-2 ring-2 ring-neutral-400 ring-inset stroke-transparent w-6 h-6 peer-checked:(bg-blue-500 stroke-white ring-0) peer-hover:ring-neutral-600 peer-hover:peer-checked:bg-blue-600`
+)`rounded-sm stroke-2 ring-2 ring-neutral-400 ring-inset stroke-transparent w-6 h-6 peer-checked:(bg-blue-400 stroke-white ring-0) peer-hover:ring-neutral-600 peer-hover:peer-checked:bg-blue-500`
