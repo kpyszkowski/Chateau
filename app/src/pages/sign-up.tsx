@@ -12,7 +12,6 @@ const SignInPage = () => (
     <FormBase
       heading="Sign up"
       description="Chat with friends - sign up now!"
-      tw="m-auto py-8"
     >
       <TextField
         label="Name"
