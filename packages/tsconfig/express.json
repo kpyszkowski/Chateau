@@ -3,16 +3,8 @@
   "display": "Express",
   "extends": "./default.json",
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["esnext"],
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    "target": "ES6",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   }
 }

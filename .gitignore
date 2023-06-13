@@ -1,5 +1,5 @@
 node_modules
 .next
-build
+dist
 .DS_Store
 next-env.d.ts
