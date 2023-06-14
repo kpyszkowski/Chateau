@@ -1,14 +1,14 @@
 import { Router } from 'express'
 import { validate } from '@/middlewares'
-import { signInUserSchema, signUpUserSchema } from '@/validators'
+import { signInSchema, signUpSchema } from '@/schemas'
 import type { Router as RouterType } from 'express'
 
 const authRouter: RouterType = Router()
 
-authRouter.get('/sign-in', validate(signInUserSchema), (req, res) => {
+authRouter.get('/sign-in', validate(signInSchema), (req, res) => {
   res.status(200)
 })
-authRouter.get('/sign-up', validate(signUpUserSchema), (req, res) => {
+authRouter.get('/sign-up', validate(signUpSchema), (req, res) => {
   res.status(200)
 })
 authRouter.get('/sign-out', (req, res) => {
