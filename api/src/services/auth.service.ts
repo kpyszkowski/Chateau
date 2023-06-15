@@ -1,11 +1,10 @@
+import { comparePasswords, getHashedPassword, getToken } from '@/helpers'
 import { UserModel } from '@/models'
 import type {
   AuthServiceParametersType,
   AuthSignInServiceParametersType,
   AuthSignUpServiceParametersType,
 } from '@/types'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 
 export class AuthService {
   #accessTokenSecret
@@ -38,7 +37,7 @@ export class AuthService {
       }
     }
 
-    const isPasswordValid = await bcrypt.compare(password, foundUser.password)
+    const isPasswordValid = await comparePasswords(password, foundUser.password)
     if (!isPasswordValid) {
       console.log({ isPasswordValid })
       return {
@@ -47,15 +46,15 @@ export class AuthService {
       }
     }
 
-    const accessToken = jwt.sign(
+    const accessToken = getToken(
       { id: foundUser._id, email: foundUser.email },
       this.#accessTokenSecret,
-      { expiresIn: this.#accessTokenAge },
+      this.#accessTokenAge,
     )
-    const refreshToken = jwt.sign(
+    const refreshToken = getToken(
       { id: foundUser._id, email: foundUser.email },
-      this.#refreshTokenSecret,
-      { expiresIn: this.#refreshTokenAge },
+      this.#accessTokenSecret,
+      this.#accessTokenAge,
     )
     return {
       statusCode: 200,
@@ -76,7 +75,7 @@ export class AuthService {
       }
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await getHashedPassword(password, 10)
 
     const newUser = await UserModel.create({
       name,

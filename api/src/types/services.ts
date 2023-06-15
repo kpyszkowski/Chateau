@@ -1,8 +1,10 @@
+export type AgeType = string | number
+
 export interface AuthServiceParametersType {
   accessTokenSecret: string
-  accessTokenAge: string | number
+  accessTokenAge: AgeType
   refreshTokenSecret: string
-  refreshTokenAge: string | number
+  refreshTokenAge: AgeType
 }
 
 export type AuthSignInServiceParametersType = {
