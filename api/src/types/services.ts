@@ -1,3 +1,6 @@
+import type { JwtPayload as JwtPayloadType } from "jsonwebtoken"
+import type { TokenPayloadType } from "types"
+
 export type AgeType = string | number
 
 export interface AuthServiceParametersType {
@@ -17,3 +20,5 @@ export type AuthSignUpServiceParametersType = {
   email: string
   password: string
 }
+
+export type PayloadType = JwtPayloadType & TokenPayloadType
