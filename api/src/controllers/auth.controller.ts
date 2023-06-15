@@ -30,7 +30,7 @@ export class AuthController {
       res.cookie('refresh-token', refreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: 1337,
+        maxAge: REFRESH_TOKEN_AGE as number,
       })
       return res.status(statusCode).json({
         message,
@@ -55,7 +55,9 @@ export class AuthController {
       message,
     })
   }
+  async refreshAccessToken(req: Request, res: Response) {
+    console.log(req.cookies)
+    res.sendStatus(200)
+  }
   //   async signOut(req: Request, res: Response) {}
-  //   async accessToken(req: Request, res: Response) {}
-  //   async refreshToken(req: Request, res: Response) {}
 }

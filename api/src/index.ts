@@ -1,6 +1,7 @@
 import express, { json } from 'express'
 import type { Request, Response } from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 import 'dotenv/config'
 import { configureDatabase } from '@/configs'
@@ -13,6 +14,7 @@ configureDatabase({ databaseUri: MONGODB_URI })
 const app = express()
 app.use(cors())
 app.use(json())
+app.use(cookieParser())
 
 app.use(authRouter)
 

@@ -1,11 +1,6 @@
-import type { AgeType, PayloadType as CustomPayloadType } from '@/types'
+import type { AgeType, PayloadType } from '@/types'
 import jwt from 'jsonwebtoken'
-import type {
-  Secret as SecretType,
-  JwtPayload as BasePayloadType,
-} from 'jsonwebtoken'
-
-type PayloadType = string | (BasePayloadType & CustomPayloadType)
+import type { Secret as SecretType } from 'jsonwebtoken'
 
 export const getToken = (
   payload: PayloadType,

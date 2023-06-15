@@ -1,9 +1,15 @@
-import { comparePasswords, getHashedPassword, getToken } from '@/helpers'
+import {
+  comparePasswords,
+  decodeToken,
+  getHashedPassword,
+  getToken,
+} from '@/helpers'
 import { UserModel } from '@/models'
 import type {
   AuthServiceParametersType,
   AuthSignInServiceParametersType,
   AuthSignUpServiceParametersType,
+  AuthRefreshAccessTokenServiceParametersType,
 } from '@/types'
 
 export class AuthService {
@@ -94,5 +100,29 @@ export class AuthService {
       statusCode: 400,
       message: 'auth/unable-to-sign-up',
     }
+  }
+
+  async refreshAccessToken(
+    parameters: AuthRefreshAccessTokenServiceParametersType,
+  ) {
+    const { refreshToken } = parameters
+
+    try {
+      const { id, email } = decodeToken(refreshToken, this.#accessTokenSecret)
+
+      if (id && email) {
+        const newAccessToken = getToken(
+          { id, email },
+          this.#accessTokenSecret,
+          this.#accessTokenAge,
+        )
+
+        return {
+          statusCode: 200,
+          message: 'auth/refreshed-access-token',
+          payload: { accessToken: newAccessToken },
+        }
+      }
+    } catch (error) {}
   }
 }
