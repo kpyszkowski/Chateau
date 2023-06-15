@@ -2,23 +2,23 @@ import { Router } from 'express'
 import { validate } from '@/middlewares'
 import { signInSchema, signUpSchema } from '@/schemas'
 import type { Router as RouterType } from 'express'
+import { AuthController } from '@/controllers'
+
+const controller = new AuthController()
 
 const authRouter: RouterType = Router()
 
-authRouter.get('/sign-in', validate(signInSchema), (req, res) => {
-  res.status(200)
-})
-authRouter.get('/sign-up', validate(signUpSchema), (req, res) => {
-  res.status(200)
-})
+authRouter.post('/sign-in', validate(signInSchema), controller.signIn)
+authRouter.post('/sign-up', validate(signUpSchema), controller.signUp)
+
 authRouter.get('/sign-out', (req, res) => {
-  res.status(200)
+  res.sendStatus(200)
 })
 authRouter.get('/access-token', (req, res) => {
-  res.status(200)
+  res.sendStatus(200)
 })
 authRouter.get('/refresh-token', (req, res) => {
-  res.status(200)
+  res.sendStatus(200)
 })
 
 export default authRouter

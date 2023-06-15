@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { json } from 'express'
 import cors from 'cors'
 
 import 'dotenv/config'
@@ -10,6 +10,7 @@ configureDatabase({ databaseUri: MONGODB_URI })
 
 const app = express()
 app.use(cors())
+app.use(json())
 
 app.use(authRouter)
 
