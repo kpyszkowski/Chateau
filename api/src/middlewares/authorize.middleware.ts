@@ -9,19 +9,17 @@ export const authorize = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { authorization: tokenHeader } = req.headers
-
-  if (!tokenHeader) {
-    return res.status(400).json({
-      message: 'auth/missing-authorization-header',
-    })
-  }
-
+  const { authorization: tokenHeader = '' } = req.headers
   const isTokenHeaderValid = validateTokenHeader(tokenHeader)
 
-  if (!isTokenHeaderValid) {
+  if (isTokenHeaderValid) {
+    const errorMessage =
+      tokenHeader.length === 0
+        ? 'auth/missing-authorization-header'
+        : 'auth/invalid-authorization-header'
+
     return res.status(400).json({
-      message: 'auth/invalid-authorization-header',
+      message: errorMessage,
     })
   }
 
