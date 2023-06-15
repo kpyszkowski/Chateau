@@ -53,8 +53,8 @@ export class AuthService {
     )
     const refreshToken = getToken(
       { id: foundUser._id, email: foundUser.email },
-      this.#accessTokenSecret,
-      this.#accessTokenAge,
+      this.#refreshTokenSecret,
+      this.#refreshTokenAge,
     )
     return {
       statusCode: 200,
