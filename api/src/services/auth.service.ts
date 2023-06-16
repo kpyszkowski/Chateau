@@ -4,32 +4,32 @@ import {
   getHashedPassword,
   getToken,
 } from '@/helpers'
-import { UserModel } from '@/models'
+import { UserModel, RefreshTokenModel } from '@/models'
 import type {
   AuthServiceParametersType,
   AuthSignInServiceParametersType,
   AuthSignUpServiceParametersType,
-  AuthRefreshAccessTokenServiceParametersType,
+  AuthRefreshTokensServiceParametersType,
 } from '@/types'
 
 export class AuthService {
   #accessTokenSecret
-  #accessTokenAge
+  #accessTokenTTL
   #refreshTokenSecret
-  #refreshTokenAge
+  #refreshTokenTTL
 
   constructor(parameters: AuthServiceParametersType) {
     const {
       accessTokenSecret,
-      accessTokenAge,
+      accessTokenTTL,
       refreshTokenSecret,
-      refreshTokenAge,
+      refreshTokenTTL,
     } = parameters
 
     this.#accessTokenSecret = accessTokenSecret
-    this.#accessTokenAge = accessTokenAge
+    this.#accessTokenTTL = accessTokenTTL
     this.#refreshTokenSecret = refreshTokenSecret
-    this.#refreshTokenAge = refreshTokenAge
+    this.#refreshTokenTTL = refreshTokenTTL
   }
 
   async signIn(parameters: AuthSignInServiceParametersType) {
@@ -55,13 +55,26 @@ export class AuthService {
     const accessToken = getToken(
       { id: foundUser._id, email: foundUser.email },
       this.#accessTokenSecret,
-      this.#accessTokenAge,
+      this.#accessTokenTTL,
     )
     const refreshToken = getToken(
       { id: foundUser._id, email: foundUser.email },
       this.#refreshTokenSecret,
-      this.#refreshTokenAge,
+      this.#refreshTokenTTL,
     )
+
+    const storedRefreshToken = await RefreshTokenModel.create({
+      userId: foundUser._id,
+      token: refreshToken,
+    })
+
+    if (!storedRefreshToken) {
+      return {
+        statusCode: 400,
+        message: 'auth/unable-to-store-refresh-token',
+      }
+    }
+
     return {
       statusCode: 200,
       message: 'auth/signed-in',
@@ -102,27 +115,68 @@ export class AuthService {
     }
   }
 
-  async refreshAccessToken(
-    parameters: AuthRefreshAccessTokenServiceParametersType,
-  ) {
+  async refreshTokens(parameters: AuthRefreshTokensServiceParametersType) {
     const { refreshToken } = parameters
 
-    try {
-      const { id, email } = decodeToken(refreshToken, this.#accessTokenSecret)
-
-      if (id && email) {
-        const newAccessToken = getToken(
-          { id, email },
-          this.#accessTokenSecret,
-          this.#accessTokenAge,
-        )
-
-        return {
-          statusCode: 200,
-          message: 'auth/refreshed-access-token',
-          payload: { accessToken: newAccessToken },
-        }
+    if (!refreshToken) {
+      return {
+        statusCode: 400,
+        message: 'auth/refresh-token-expired',
       }
-    } catch (error) {}
+    }
+
+    const tokenPayload = decodeToken(refreshToken, this.#refreshTokenSecret)
+
+    if (!tokenPayload) {
+      return {
+        statusCode: 400,
+        message: 'auth/unable-to-refresh-tokens',
+      }
+    }
+
+    const { id, email } = tokenPayload
+
+    const storedRefreshToken = await RefreshTokenModel.findOne({
+      userId: tokenPayload.id,
+      token: refreshToken,
+    })
+
+    if (!storedRefreshToken) {
+      return {
+        statusCode: 400,
+        message: 'auth/refresh-token-compromised',
+      }
+    }
+
+    const newAccessToken = getToken(
+      { id, email },
+      this.#accessTokenSecret,
+      this.#accessTokenTTL,
+    )
+
+    const newRefreshToken = getToken(
+      { id, email },
+      this.#refreshTokenSecret,
+      this.#refreshTokenTTL,
+    )
+
+    storedRefreshToken.updateOne({ token: newRefreshToken })
+    const updatedRefreshToken = await storedRefreshToken.save()
+
+    if (!updatedRefreshToken) {
+      return {
+        statusCode: 400,
+        message: 'auth/unable-to-store-refresh-token',
+      }
+    }
+
+    return {
+      statusCode: 200,
+      message: 'auth/refreshed-tokens',
+      payload: {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      },
+    }
   }
 }

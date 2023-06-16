@@ -5,9 +5,9 @@ export type AgeType = string | number
 
 export interface AuthServiceParametersType {
   accessTokenSecret: string
-  accessTokenAge: AgeType
+  accessTokenTTL: AgeType
   refreshTokenSecret: string
-  refreshTokenAge: AgeType
+  refreshTokenTTL: AgeType
 }
 
 export type AuthSignInServiceParametersType = {
@@ -23,6 +23,6 @@ export type AuthSignUpServiceParametersType = {
 
 export type PayloadType = JwtPayloadType & TokenPayloadType
 
-export type AuthRefreshAccessTokenServiceParametersType = {
+export type AuthRefreshTokensServiceParametersType = {
   refreshToken: string
 }

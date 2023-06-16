@@ -2,16 +2,16 @@ import { AuthService } from '@/services'
 import type { Request, Response } from 'express'
 
 const {
-  ACCESS_TOKEN_AGE,
+  ACCESS_TOKEN_TTL,
   ACCESS_TOKEN_SECRET,
-  REFRESH_TOKEN_AGE,
+  REFRESH_TOKEN_TTL,
   REFRESH_TOKEN_SECRET,
 } = process.env
 
 const service = new AuthService({
-  accessTokenAge: ACCESS_TOKEN_AGE,
+  accessTokenTTL: ACCESS_TOKEN_TTL,
   accessTokenSecret: ACCESS_TOKEN_SECRET,
-  refreshTokenAge: REFRESH_TOKEN_AGE,
+  refreshTokenTTL: REFRESH_TOKEN_TTL,
   refreshTokenSecret: REFRESH_TOKEN_SECRET,
 })
 
@@ -27,10 +27,10 @@ export class AuthController {
     if (payload) {
       const { accessToken, refreshToken } = payload
 
-      res.cookie('refresh-token', refreshToken, {
+      res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: true,
-        maxAge: REFRESH_TOKEN_AGE as number,
+        secure: false,
+        maxAge: REFRESH_TOKEN_TTL,
       })
       return res.status(statusCode).json({
         message,
@@ -55,9 +55,34 @@ export class AuthController {
       message,
     })
   }
-  async refreshAccessToken(req: Request, res: Response) {
-    console.log(req.cookies)
-    res.sendStatus(200)
+  async refreshTokens(req: Request, res: Response) {
+    const { refreshToken } = req.cookies
+
+    const { statusCode, message, payload } = await service.refreshTokens({
+      refreshToken,
+    })
+
+    if (payload) {
+      const { accessToken, refreshToken } = payload
+
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: false,
+        maxAge: REFRESH_TOKEN_TTL,
+      })
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        maxAge: REFRESH_TOKEN_TTL,
+      })
+
+      return res.status(statusCode).json({
+        message,
+        accessToken,
+      })
+    }
+
+    return res.status(statusCode).json({ message })
   }
   //   async signOut(req: Request, res: Response) {}
 }

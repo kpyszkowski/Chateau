@@ -8,8 +8,14 @@ import { configureDatabase } from '@/configs'
 import { authRouter } from '@/routers'
 import { authorize } from '@/middlewares'
 
-const { PORT, MONGODB_URI } = process.env
-configureDatabase({ databaseUri: MONGODB_URI })
+const { PORT, MONGODB_USER, MONGODB_HOST, MONGODB_PASSWORD, MONGODB_PORT } =
+  process.env
+configureDatabase({
+  username: MONGODB_USER,
+  password: MONGODB_PASSWORD,
+  host: MONGODB_HOST,
+  port: MONGODB_PORT,
+})
 
 const app = express()
 app.use(cors())

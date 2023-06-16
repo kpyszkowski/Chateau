@@ -1,3 +1,6 @@
 export type DatabaseConfigParamsType = {
-  databaseUri: string
+  username: string
+  password: string
+  host: string
+  port: number
 }

@@ -15,6 +15,6 @@ authRouter.get('/sign-out', (req, res) => {
   res.sendStatus(200)
 })
 
-authRouter.get('/refresh-access-token', controller.refreshAccessToken)
+authRouter.get('/refresh-tokens', controller.refreshTokens)
 
 export default authRouter
