@@ -26,3 +26,8 @@ export type PayloadType = JwtPayloadType & TokenPayloadType
 export type AuthRefreshTokensServiceParametersType = {
   refreshToken: string
 }
+
+export type AuthSignOutServiceParametersType = {
+  refreshToken: string
+  userId: string
+}

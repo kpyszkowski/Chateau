@@ -55,6 +55,23 @@ export class AuthController {
       message,
     })
   }
+  async signOut(req: Request, res: Response) {
+    const { decodedToken } = req.body
+    const { id } = decodedToken
+    const { refreshToken } = req.cookies
+
+    const { statusCode, message } = await service.signOut({
+      userId: id,
+      refreshToken,
+    })
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: false,
+      maxAge: REFRESH_TOKEN_TTL,
+    })
+    return res.status(statusCode).json({ message })
+  }
   async refreshTokens(req: Request, res: Response) {
     const { refreshToken } = req.cookies
 

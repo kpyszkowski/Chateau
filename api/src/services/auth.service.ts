@@ -10,6 +10,7 @@ import type {
   AuthSignInServiceParametersType,
   AuthSignUpServiceParametersType,
   AuthRefreshTokensServiceParametersType,
+  AuthSignOutServiceParametersType,
 } from '@/types'
 
 export class AuthService {
@@ -67,7 +68,6 @@ export class AuthService {
       userId: foundUser._id,
       token: refreshToken,
     })
-
     if (!storedRefreshToken) {
       return {
         statusCode: 400,
@@ -86,7 +86,6 @@ export class AuthService {
     const { name, email, password } = parameters
 
     const foundUser = await UserModel.findOne({ email })
-
     if (foundUser) {
       return {
         statusCode: 400,
@@ -95,13 +94,11 @@ export class AuthService {
     }
 
     const hashedPassword = await getHashedPassword(password, 10)
-
     const newUser = await UserModel.create({
       name,
       email,
       password: hashedPassword,
     })
-
     if (newUser) {
       return {
         statusCode: 200,
@@ -115,9 +112,28 @@ export class AuthService {
     }
   }
 
+  async signOut(parameters: AuthSignOutServiceParametersType) {
+    const { userId, refreshToken } = parameters
+
+    const removedRefreshToken = await RefreshTokenModel.findOneAndRemove({
+      userId,
+      token: refreshToken,
+    })
+    if (!removedRefreshToken) {
+      return {
+        statusCode: 400,
+        message: 'auth/unable-to-sign-out',
+      }
+    }
+
+    return {
+      statusCode: 200,
+      message: 'auth/signed-out',
+    }
+  }
+
   async refreshTokens(parameters: AuthRefreshTokensServiceParametersType) {
     const { refreshToken } = parameters
-
     if (!refreshToken) {
       return {
         statusCode: 400,
@@ -126,7 +142,6 @@ export class AuthService {
     }
 
     const tokenPayload = decodeToken(refreshToken, this.#refreshTokenSecret)
-
     if (!tokenPayload) {
       return {
         statusCode: 400,
@@ -137,8 +152,17 @@ export class AuthService {
     const { id, email } = tokenPayload
 
     const storedRefreshToken = await RefreshTokenModel.findOne({
-      userId: tokenPayload.id,
+      userId: id,
       token: refreshToken,
+    })
+
+    console.log({
+      id,
+      refreshToken,
+      storedRefreshToken: storedRefreshToken?.token,
+      userId: storedRefreshToken?.userId,
+      idMatch: id === storedRefreshToken?.userId,
+      tokenMatch: storedRefreshToken?.token === refreshToken,
     })
 
     if (!storedRefreshToken) {
@@ -153,7 +177,6 @@ export class AuthService {
       this.#accessTokenSecret,
       this.#accessTokenTTL,
     )
-
     const newRefreshToken = getToken(
       { id, email },
       this.#refreshTokenSecret,
@@ -162,7 +185,6 @@ export class AuthService {
 
     storedRefreshToken.updateOne({ token: newRefreshToken })
     const updatedRefreshToken = await storedRefreshToken.save()
-
     if (!updatedRefreshToken) {
       return {
         statusCode: 400,

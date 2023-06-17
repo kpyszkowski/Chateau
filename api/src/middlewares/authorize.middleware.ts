@@ -12,7 +12,7 @@ export const authorize = async (
   const { authorization: tokenHeader = '' } = req.headers
   const isTokenHeaderValid = validateTokenHeader(tokenHeader)
 
-  if (isTokenHeaderValid) {
+  if (!isTokenHeaderValid) {
     const errorMessage =
       tokenHeader.length === 0
         ? 'auth/missing-authorization-header'
