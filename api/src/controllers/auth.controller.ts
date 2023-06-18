@@ -101,5 +101,4 @@ export class AuthController {
 
     return res.status(statusCode).json({ message })
   }
-  //   async signOut(req: Request, res: Response) {}
 }
