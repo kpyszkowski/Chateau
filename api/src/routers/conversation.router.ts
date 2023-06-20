@@ -9,9 +9,13 @@ const authRouter: RouterType = Router()
 authRouter.post(
   '/create',
   [authorize, validate(conversationParticipantsSchema)],
-  ConversationController.create,
+  ConversationController.createConversation,
 )
-authRouter.delete('/leave/:id', authorize, ConversationController.leave)
+authRouter.put(
+  '/:id/leave',
+  authorize,
+  ConversationController.leaveConversation,
+)
 authRouter.put(
   '/:id/add-participants',
   [authorize, validate(conversationParticipantsSchema)],

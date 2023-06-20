@@ -54,12 +54,12 @@ export class AuthService {
     }
 
     const accessToken = getToken(
-      { id: foundUser._id, email: foundUser.email },
+      { id: foundUser._id.toString(), email: foundUser.email },
       this.#accessTokenSecret,
       this.#accessTokenTTL,
     )
     const refreshToken = getToken(
-      { id: foundUser._id, email: foundUser.email },
+      { id: foundUser._id.toString(), email: foundUser.email },
       this.#refreshTokenSecret,
       this.#refreshTokenTTL,
     )
@@ -154,15 +154,6 @@ export class AuthService {
     const storedRefreshToken = await RefreshTokenModel.findOne({
       userId: id,
       token: refreshToken,
-    })
-
-    console.log({
-      id,
-      refreshToken,
-      storedRefreshToken: storedRefreshToken?.token,
-      userId: storedRefreshToken?.userId,
-      idMatch: id === storedRefreshToken?.userId,
-      tokenMatch: storedRefreshToken?.token === refreshToken,
     })
 
     if (!storedRefreshToken) {

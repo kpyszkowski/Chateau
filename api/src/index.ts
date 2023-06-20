@@ -5,8 +5,8 @@ import cookieParser from 'cookie-parser'
 
 import 'dotenv/config'
 import { configureDatabase } from '@/configs'
-import { authRouter } from '@/routers'
-import { authorize } from '@/middlewares'
+import { authRouter, conversationRouter } from '@/routers'
+import { authorize, handleErrors } from '@/middlewares'
 
 const { PORT, MONGODB_USER, MONGODB_HOST, MONGODB_PASSWORD, MONGODB_PORT } =
   process.env
@@ -21,8 +21,10 @@ const app = express()
 app.use(cors())
 app.use(json())
 app.use(cookieParser())
+app.use(handleErrors)
 
-app.use(authRouter)
+app.use('/auth', authRouter)
+app.use('/conversation', conversationRouter)
 
 app.get('/protected-endpoint', authorize, (req: Request, res: Response) => {
   res

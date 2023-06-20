@@ -1,4 +1,9 @@
-import { decodeToken, validateTokenHeader } from '@/helpers'
+import {
+  BadRequestError,
+  UnauthorizedError,
+  decodeToken,
+  validateTokenHeader,
+} from '@/helpers'
 import type { Request, Response, NextFunction } from 'express'
 import { TokenExpiredError } from 'jsonwebtoken'
 
@@ -18,9 +23,7 @@ export const authorize = async (
         ? 'auth/missing-authorization-header'
         : 'auth/invalid-authorization-header'
 
-    return res.status(400).json({
-      message: errorMessage,
-    })
+    throw BadRequestError(errorMessage)
   }
 
   try {
@@ -36,6 +39,6 @@ export const authorize = async (
       ? 'auth/token-expired'
       : 'auth/unauthorized'
 
-    return res.status(401).json({ message: errorMessage })
+    throw UnauthorizedError(errorMessage)
   }
 }

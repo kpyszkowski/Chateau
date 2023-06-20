@@ -10,6 +10,10 @@ const conversationSchema = new Schema({
       type: Schema.Types.ObjectId,
     },
   ],
+  host: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   messages: [
     {
       _id: {
@@ -33,6 +37,7 @@ const conversationSchema = new Schema({
         default: Date.now,
       },
     },
+    { default: [] },
   ],
 })
 
