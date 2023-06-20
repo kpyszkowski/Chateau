@@ -1,6 +1,4 @@
-import type { PropsWithChildren } from 'react'
-
-export interface AvatarProps extends PropsWithChildren {
+export interface AvatarProps {
   name: string
   showStatus?: boolean
   isAvaliable?: boolean
