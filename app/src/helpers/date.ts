@@ -1,4 +1,4 @@
-export const getConditionallyFormattedDate = (dateString: string) => {
+export const getConditionallyFormattedDate = (dateString: string | number) => {
   const today = new Date()
   const date = new Date(dateString)
 

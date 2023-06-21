@@ -8,10 +8,10 @@ const boldFont = css`
 `
 
 export const StyledContainer = tw(Link)`
-flex justify-between items-center px-5 py-2 rounded-xl bg-neutral-50 gap-3
+flex justify-between items-center px-5 py-2 rounded-xl bg-neutral-50 gap-3 outline-none hover:bg-neutral-100 focus-visible:(bg-neutral-100 ring-2 ring-offset-2)
 `
 export const StyledWrapper = tw.div`
-flex flex-col gap-2 flex-1 whitespace-nowrap min-w-0 text-base 
+flex flex-col gap-1 flex-1 whitespace-nowrap min-w-0 text-base 
 `
 export const StyledHeading = tw.span`
 flex gap-5 items-baseline text-black text-lg

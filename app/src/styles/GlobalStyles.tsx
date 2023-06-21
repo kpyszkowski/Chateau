@@ -1,13 +1,16 @@
 import { createGlobalStyle } from 'styled-components'
 import type { CSSObject } from 'styled-components'
-import tw, { theme, globalStyles } from 'twin.macro'
+import { globalStyles } from 'twin.macro'
+import { Inter } from 'next/font/google'
 
-const GlobalStyles = createGlobalStyle({
-  body: {
-    WebkitTapHighlightColor: theme`colors.purple.500`,
-    ...tw`antialiased`,
-  },
-  ...(globalStyles as CSSObject),
-})
+const font = Inter({ subsets: ['latin'] })
+
+const GlobalStyles = createGlobalStyle`
+  body {
+    ${font.style}
+  }
+
+  ${globalStyles as CSSObject}
+`
 
 export default GlobalStyles

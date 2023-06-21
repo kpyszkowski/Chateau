@@ -10,6 +10,7 @@ import {
   StyledErrorMessage,
 } from './TextField.styled'
 import { HiOutlineExclamationCircle } from 'react-icons/hi2'
+import 'twin.macro'
 
 function TextField(props: TextFieldProps) {
   const {
@@ -29,7 +30,7 @@ function TextField(props: TextFieldProps) {
   return (
     <StyledContainer className={className}>
       <StyledLabel $isHidden={isLabelHidden}>{label}</StyledLabel>
-      <StyledInputWrapper $hasBorder={isButtonVisible}>
+      <StyledInputWrapper $hasBorder={!isButtonVisible}>
         <StyledInput
           $hasError={errorMessage.length > 0}
           $hasSibling={isButtonVisible}

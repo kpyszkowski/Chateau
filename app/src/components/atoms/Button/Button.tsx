@@ -1,14 +1,21 @@
 import React from 'react'
 import type { ButtonProps } from './Button.types'
-import { StyledContainer } from './Button.styled'
+import { StyledContainer, StyledHiddenLabel } from './Button.styled'
 
 function Button(props: ButtonProps) {
-  const { children, variant = 'primary', ...restProps } = props
+  const {
+    children,
+    variant = 'primary',
+    hiddenLabel = '',
+    ...restProps
+  } = props
   return (
     <StyledContainer
       $variant={variant}
+      type="button"
       {...restProps}
     >
+      {hiddenLabel && <StyledHiddenLabel>{hiddenLabel}</StyledHiddenLabel>}
       {children}
     </StyledContainer>
   )

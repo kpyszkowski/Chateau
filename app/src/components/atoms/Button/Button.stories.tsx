@@ -23,3 +23,17 @@ export const Secondary: Story = {
     variant: 'secondary',
   },
 }
+
+export const Teritary: Story = {
+  args: {
+    variant: 'tertiary',
+  },
+}
+
+export const PrimaryWithHiddenLabel: Story = {
+  args: {
+    variant: 'primary',
+    hiddenLabel: "I'm smiley!",
+    children: '🙂',
+  },
+}
